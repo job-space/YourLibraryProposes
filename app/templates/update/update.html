@@ -1,0 +1,33 @@
+{% extends 'base-content.html' %}
+
+{% block title %}
+Оновлення
+{% endblock %}
+
+
+{% block content-inside %}
+
+            <div class="base-content-categ type">
+            <a href="" class="text-hov">Оновлення</a>
+
+            <hr style="margin: 30px;">
+
+            <div class="base-content-book-container type">
+                {% for post in posts_ups %}
+                {% for key, value in post.items %}
+                <a href="" class="categ-text-hov">Що нового?</a>
+                <p><img class="img-categ-content" src="{{ key.image_news.url }}"></p>
+                <ul style="text-align: left; margin: 0 0 100px 0;">
+                    {% for v in value %}
+                    <li style="margin-top: 15px; list-style: none;">
+                        {{ v }}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endfor %}
+                {% endfor %}
+            </div>
+            </div>
+
+
+{% endblock content-inside %}

@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="up-input-search">
+<form action="{% url 'search' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="search_obj" class="base-content-right-input-text-up" placeholder="Введіть назву книги чи ім'я автора...">
+</form>
+</div>
+<div class="base-content-left">
+    {% block content-inside %}
+    {% endblock content-inside %}
+</div>
+<div class="base-content-right">
+            <div class="base-content-right-container">
+                <form action="{% url 'search' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="search_obj" class="base-content-right-input-text" placeholder="Введіть назву книги чи ім'я автора...">
+                </form>
+
+                <div class="base-content-categ type text-hov">
+                     <a href="{% url 'categories' %}">Популярні жанри</a>
+                </div>
+            <hr style="margin-top: 20px;">
+
+            <ul class="category-home">
+                {% for popular_sub_category in popular_sub_categorys %}
+                <li>
+                    <a href="{% url 'sub_category-page' category=popular_sub_category.sub_category.cat.cat_url_name sub_category=popular_sub_category.sub_category.sub_cat_url_name %}" class="text-hov">{{ popular_sub_category.sub_category.sub_cat_name }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+
+                <div class="base-content-categ type">
+                     <a href="{% url 'popular' %}" class="text-hov">Популярні</a>
+                 </div>
+
+            <hr style="margin-top: 20px;">
+
+                {% for popular in popular_time %}
+                <div class="base-content-right-content">
+
+                <div><a href="{% url 'popular_id' post_id=popular.post.id %}"><img src="{{ popular.post.post_image.url }}"></a>
+                </div>
+                <div class="base-content-right-content-disc type"><a href="{% url 'popular_id' post_id=popular.post.id %}" class="text-hov">{{ popular.post.post_name }}</a>
+                   <br><br>
+                    <a href="{% url 'popular_id' post_id=popular.post.id %}" class="data text-hov">{{ popular.post.data.day }}.{{ popular.post.data.month }}.{{ popular.post.data.year }}</a>
+
+                </div>
+                </div>
+                {% endfor %}
+
+                 <div class="base-content-categ type">
+                     <a href="{% url 'new' %}" class="text-hov">Недавньо додані</a>
+                 </div>
+
+            <hr style="margin-top: 20px;">
+
+                {% for post in posts %}
+                <div class="base-content-right-content">
+                <div><a href="{% url 'popular_id' post_id=post.id %}"><img src="{{ post.post_image.url }}"></a></div>
+                <div class="base-content-right-content-disc type"><a href="{% url 'popular_id' post_id=post.id %}" class="text-hov">{{ post.post_name }}</a>
+                   <br><br>
+                    <a href="{% url 'popular_id' post_id=post.id %}" class="data text-hov">{{ post.data.day }}.{{ post.data.month }}.{{ post.data.year }}</a>
+                </div>
+                </div>
+                {% endfor %}
+
+           </div>
+        </div>
+
+
+{% endblock content %}

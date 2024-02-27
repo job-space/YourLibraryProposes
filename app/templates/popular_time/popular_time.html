@@ -1,0 +1,265 @@
+{% extends 'base-content.html' %}
+
+{% block title %}
+{{ post.post_name }}
+{% endblock %}
+
+
+{% block content-inside %}
+
+<div class="book-page-header type">
+    <a style="color: green;">{% for cat in post.sub_cat.all %}
+    {{ cat.sub_cat_name }}
+        {% endfor %}</a>
+    <p style="font-size: 35px; font-weight: 10; margin: 5px;">{{ post.post_name }}</p>
+    <p style="color: grey;">Опубліковано {{ post.data.day }}.{{ post.data.month }}.{{ post.data.year }}</p>
+
+</div>
+<hr style="margin: 0 20px 40px 20px;">
+
+<div class="book-page-content">
+<div class="img-cont-box">
+<img class="img-cont" src="{{ post.post_image.url }}">
+</div>
+
+<div class="content type">
+    {% if request.user.is_authenticated %}
+    <form>
+    {% csrf_token %}
+    {% if post in user.selected.all %}
+    <button id="sel" class="but-book-sel but-j-s" type="button">Обране</button>
+    {% else %}
+    <button id="sel" class="but-book but-j-s" type="button">Обране</button>
+    {% endif %}
+    </form>
+    {% else %}
+    <button class="but-book" onclick="formSend()" type="button">Обране</button>
+    {% endif %}
+
+    {% if request.user.is_authenticated %}
+    <form>
+    {% csrf_token %}
+    {% if post in user.read.all %}
+    <button id="rea" class="but-book-sel but-j-r" type="button">Прочитано</button>
+    {% else %}
+    <button id="rea" class="but-book but-j-r" type="button">Прочитано</button>
+    {% endif %}
+    </form>
+    {% else %}
+    <button class="but-book" onclick="formSend()" type="button">Прочитано</button>
+    {% endif %}
+
+    <p>Рік випуску: {{ post.graduation_year.year }}</p>
+    <a href="{% url 'author' author_id=post.author.id %}">Автор: {{ post.author.author_name }}</a>
+    <p>Мова: {{ post.language.language_name }}</p>
+    <p>Кількість сторінок: {{ post.number_of_pages }}</p>
+    <p>Кількість завантажень: <span id="num_of_down">{{ post.number_of_downloads }}</span></p>
+
+    <div class="rating" data-post-id="{{ post.id }}">
+    <span class="star" data-value="1" style="font-size: 35px;">&#9733;</span>
+    <span class="star" data-value="2" style="font-size: 35px;">&#9733;</span>
+    <span class="star" data-value="3" style="font-size: 35px;">&#9733;</span>
+    <span class="star" data-value="4" style="font-size: 35px;">&#9733;</span>
+    <span class="star" data-value="5" style="font-size: 35px;">&#9733;</span>
+    </div>
+
+    <p>Опис:</p>
+    {% for paragraph in paragraphs %}
+        <p>{{ paragraph }}</p>
+    {% endfor %}
+
+</div>
+    <p class="download-header type">Завантажити книгу</p>
+    <hr>
+
+    <div class="download-type-file type">
+    {% for type in post.type_file.all %}
+        <li>
+            <a download href="{{ type.file_object.url }}" class="but-book d-f-a">{{ type.type_file_name }}</a>
+        </li>
+    {% endfor %}
+     </div>
+
+    <p class="download-header type" style="margin-top: 100px;"><a href="{% url 'same_sub_cat' sub_cat=post.id %}">Схожі книги</a></p>
+    <hr>
+
+    <div class="base-content-book-container ">
+    {% for post_obj in posts_sub_cat %}
+        {% if post_obj != post %}
+    <div class="base-content-book">
+        <a href="{% url 'popular_id' post_id=post_obj.id %}"><img src="{{ post_obj.post_image.url }}"></a>
+        <h4 class="h-w"><a href="{% url 'popular_id' post_id=post_obj.id %}" class="text-hov">{{ post_obj.post_name }}</a></h4>
+    </div>
+        {% endif %}
+    {% endfor %}
+    </div>
+
+    <p class="download-header type" style="margin-top: 100px;">Інші книги від <a href="{% url 'author' author_id=post.author.id %}" >{{ post.author.author_name }}</a></p>
+    <hr>
+    <div class="base-content-book-container ">
+    {% for post_obj in author_posts %}
+    <div class="base-content-book type">
+        <a href="{% url 'popular_id' post_id=post_obj.id %}"><img src="{{ post_obj.post_image.url }}"></a>
+        <h4 class="h-w"><a href="{% url 'popular_id' post_id=post_obj.id %}" class="text-hov">{{ post_obj.post_name }}</a></h4>
+    </div>
+    {% endfor %}
+    </div>
+</div>
+    <div class="base-content-book-container-comm">
+    <form action="{% url 'popular_id' post_id=post.id %}" method="POST" >
+        {% csrf_token %}
+        <input class="mess_cont" required="" name="message" placeholder="Приєднатися до обговорення">
+        {% if request.user.is_authenticated %}
+        <button class="but-comm" type="submit">Submit</button>
+         {% else %}
+        <button class="but-comm" onclick="formSend()" type="button">Submit</button>
+        {% endif %}
+    </form>
+</div>
+
+    <div class="comm-t-o type">
+    {% for message_obj in messages %}
+        <p style="margin: 30px;">
+            <div class="user-comm-t-l"><a class="log-u ">{{ message_obj.user.username.0 }}</a></div>
+            <div class="user-comm-t-r">
+                {% if user.username == message_obj.user.username %}
+                <p style="font-size: 18px; margin: 0 0 5px 0;">You</p>
+                {% else %}
+                <p style="font-size: 18px; margin: 0 0 5px 0;">{{ message_obj.user.username }}</p>
+                {% endif %}
+                <p style="font-size: 10px; margin-top: 5px;">{{ message_obj.data.day }}.{{ message_obj.data.month }}.{{ message_obj.data.year }}</p>
+                <p style="font-size: px;">{{ message_obj.message }}</p>
+            </div>
+        </p>
+    {% endfor %}
+    </div>
+
+
+<script>
+function formSend() {
+        alert("Будь ласка, авторизуйтеся")
+    }
+
+$('.d-f-a').click(function(){
+    $.ajax({
+        type: "POST",
+        url: "{% url 'download_file_n' %}",
+        data: {'post_id': '{{ post.id }}','csrfmiddlewaretoken': '{{ csrf_token }}'},
+        dataType: "json",
+
+        success: function(response) {
+
+            $('#num_of_down').text(response.down_num);
+
+        }
+
+    });
+});
+
+$('.but-j-s').click(function(){
+    $.ajax({
+        type: "POST",
+        url: "{% url 'selected' %}",
+        data: {'post_id': '{{ post.id }}','csrfmiddlewaretoken': '{{ csrf_token }}'},
+        dataType: "json",
+        success: function(response) {
+            if(response.result == true) {
+                $('#sel').removeClass('but-book').addClass('but-book-sel');
+            } else if(response.result == false) {
+                $('#sel').removeClass('but-book-sel').addClass('but-book');
+            }
+        }
+    });
+});
+
+$('.but-j-r').click(function(){
+    $.ajax({
+        type: "POST",
+        url: "{% url 'read' %}",
+        data: {'post_id': '{{ post.id }}','csrfmiddlewaretoken': '{{ csrf_token }}'},
+        dataType: "json",
+        success: function(response) {
+            if(response.result == true) {
+                $('#rea').removeClass('but-book').addClass('but-book-sel');
+            } else if(response.result == false) {
+                $('#rea').removeClass('but-book-sel').addClass('but-book');
+            }
+        }
+    });
+});
+
+
+
+
+
+$('.star').hover(function(){
+    var postId = $(this).parent().data('post-id');
+    var value = $(this).data('value');
+    highlightStars(postId, value);
+}, function(){
+    var postId = $(this).parent().data('post-id');
+    var currentRating = $(this).parent().data('current-rating');
+    highlightStars(postId, currentRating);
+});
+
+$('.star').click(function(){
+    var postId = $(this).parent().data('post-id');
+    var value = $(this).data('value');
+
+    // Include the CSRF token in the data
+    var csrfToken = $('[name="csrfmiddlewaretoken"]').val();
+
+    $.post(`/rate/${postId}/`, {'stars': value, 'csrfmiddlewaretoken': csrfToken}, function(data){
+        if (data.success) {
+            // Update the displayed average rating
+            updateAverageRating(postId, data.average_rating);
+            // Highlight the stars
+            highlightStars(postId, data.average_rating);
+        } else {
+            alert('Будь ласка, авторизуйтеся');
+        }
+    });
+});
+
+function updateAverageRating(postId, averageRating) {
+    // Assuming you have an element displaying the average rating
+    // Update the content or style as needed
+    $(`.average-rating[data-post-id="${postId}"]`).text(`Average Rating: ${averageRating}`);
+}
+
+function highlightStars(postId, value){
+    $(`.rating[data-post-id="${postId}"] .star`).each(function(){
+        var starValue = $(this).data('value');
+        if (starValue <= value){
+            $(this).css('color', 'gold');
+        } else {
+            $(this).css('color', 'black');
+        }
+    });
+    $(`.rating[data-post-id="${postId}"]`).data('current-rating', value);
+}
+
+
+function loadRating() {
+    var postId = '{{ post.id }}';
+
+    $.get(`/get_rating/${postId}/`, function(data){
+        if (data.success) {
+            // Update the displayed average rating
+            updateAverageRating(postId, data.average_rating);
+            // Highlight the stars
+            highlightStars(postId, data.average_rating);
+        } else {
+            alert('Error: ' + data.error);
+        }
+    });
+}
+
+// Call loadRating function when the page is loaded
+$(document).ready(function() {
+    loadRating();
+});
+</script>
+
+
+{% endblock content-inside %}

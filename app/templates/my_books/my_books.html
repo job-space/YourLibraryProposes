@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Мої книги
+{% endblock %}
+
+{% block support %}
+
+<div class="base-content-support type">
+  <div class="content-book-logout">
+  {% if request.user.is_authenticated %}
+  <div class="type" style="margin: 0 0 30px 0; font-size: 20px;">
+    Вітаю {{ user.username }}!
+  </div>
+  <button id="selected" class="but-book-sel but-m">Обрані</button>
+  <button id="read" class="but-book but-m">Прочитані</button>
+  <div class="sp-m">
+        <a style="margin-top:20px;" class="but-book" href="{% url 'logout' %}">Вийти</a>
+      </div>
+  <hr style="margin: 50px;">
+  {% else %}
+  <div style="padding: 0 0 30px 0;">Тут відображатимуться книжки які ви відклали</div>
+    <div style="padding: 0 0 30px 0;">Спочатку увійдіть до облікового запису або зареєструйтеся</div>
+    <a class="but-log" href="{% url 'login' %}">Увійти</a>
+    <a class="but-log" href="{% url 'register' %}">Реєстрація</a>
+  </div>
+  {% endif %}
+</div>
+
+{% if request.user.is_authenticated %}
+<div class="base-content-book-container selected">
+                {% if user.selected.all.count %}
+                {% for post in user.selected.all %}
+                <div class="base-content-book">
+                    <a href="{% url 'popular_id' post_id=post.id %}"><img src="{{ post.post_image.url }}"></a>
+                    <h4 class="h-w"><a href="{% url 'popular_id' post_id=post.id %}" class="text-hov">{{ post.post_name }}</a></h4>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div style="text-align: center; font-size: 20px;">
+                    Книга ще не додана
+                </div>
+                 {% endif %}
+</div>
+
+<div class="base-content-book-container read hid">
+            {% if user.read.all.count %}
+            {% for post in user.read.all %}
+                <div class="base-content-book">
+                    <a href="{% url 'popular_id' post_id=post.id %}"><img src="{{ post.post_image.url }}"></a>
+                    <h4 class="h-w"><a href="{% url 'popular_id' post_id=post.id %}" class="text-hov">{{ post.post_name }}</a></h4>
+                </div>
+            {% endfor %}
+            {% else %}
+            <div style="text-align: center; font-size: 20px;">
+                    Книга ще не додана
+            </div>
+            {% endif %}
+</div>
+{% endif %}
+
+
+
+<script>
+    $(document).ready(function(){
+
+    $(".but-m").click(function(){
+    $('.but-m').removeClass('but-book-sel').addClass('but-book');
+    $('.base-content-book-container').addClass('hid');
+    });
+
+    $("#read").click(function(){
+        $('#read').removeClass('but-book').addClass('but-book-sel');
+        $('.read').removeClass('hid');
+    });
+
+    $("#selected").click(function(){
+        $('#selected').removeClass('but-book').addClass('but-book-sel');
+        $('.selected').removeClass('hid');
+    });
+});
+</script>
+
+{% endblock support %}

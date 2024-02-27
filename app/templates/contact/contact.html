@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Зворотній зв'язок
+{% endblock %}
+
+{% block support %}
+<div class="base-content-c type">
+  <div class="content-book-c">
+    <div style="font-size: 25px; margin: 20px; color: white;">Зворотній зв'язок</div>
+    <form id="contactForm">
+      <div>
+        <input id="username" class="contact-ar" type="text" name="username" placeholder="username" title="Будь ласка, введіть своє ім'я">
+        <input id="email" class="contact-ar" type="email" name="email" placeholder="email" title="Будь ласка, введіть правильну електронну адресу">
+        <textarea id="title" class="contact-ar" name="title" rows="1" cols="4" placeholder="title" title="Будь ласка, введіть заголовок"></textarea>
+        <textarea id="message" class="contact-ar" name="message" rows="4" cols="4" placeholder="message" title="Будь ласка, введіть ваше повідомлення"></textarea>
+        <button class="but-reg c-b" type="button" onclick="submitForm()">submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function submitForm() {
+    var form = $("#contactForm")[0];
+
+    if (form.checkValidity()) {
+      handleSuccess();
+    } else {
+      setCustomValidityForUkrainian();
+      form.reportValidity();
+    }
+  }
+
+  function handleSuccess() {
+    $.ajax({
+      type: "POST",
+      url: "{% url 'contact' %}",
+      data: {
+        'username': $('#username').val(),
+        'email': $('#email').val(),
+        'title': $('#title').val(),
+        'message': $('#message').val(),
+        'csrfmiddlewaretoken': '{{ csrf_token }}'
+      },
+      dataType: "json",
+      success: function (response) {
+        if (response.result == true) {
+          alert("Дякуємо за ваш відгук");
+          clearFormFields();
+        }
+      }
+    });
+  }
+
+  function clearFormFields() {
+    $('#username').val('');
+    $('#email').val('');
+    $('#title').val('');
+    $('#message').val('');
+  }
+
+  function submitForm() {
+  var form = $("#contactForm")[0];
+
+  // Перевірка чи всі поля заповнені
+  if ($('#username').val().trim() === '') {
+    $('#username')[0].setCustomValidity('Будь ласка, введіть своє ім\'я');
+  } else {
+    $('#username')[0].setCustomValidity('');
+  }
+
+  if ($('#email').val().trim() === '') {
+    $('#email')[0].setCustomValidity('Будь ласка, введіть електронну адресу');
+} else if ($('#email').val().trim().indexOf('@') === -1) {
+    $('#email')[0].setCustomValidity('Будь ласка, введіть правильну електронну адресу');
+} else {
+    $('#email')[0].setCustomValidity('');
+}
+
+  if ($('#title').val().trim() === '') {
+    $('#title')[0].setCustomValidity('Будь ласка, введіть заголовок');
+  } else {
+    $('#title')[0].setCustomValidity('');
+  }
+
+  if ($('#message').val().trim() === '') {
+    $('#message')[0].setCustomValidity('Будь ласка, введіть ваше повідомлення');
+  } else {
+    $('#message')[0].setCustomValidity('');
+  }
+
+  // Викликати checkValidity() покаже сповіщення браузера про невірність
+  if (form.checkValidity()) {
+    handleSuccess();
+  } else {
+    form.reportValidity();
+  }
+}
+
+
+</script>
+
+
+{% endblock support %}

@@ -1,0 +1,25 @@
+{% extends 'base-content.html' %}
+
+{% block title %}
+{{ title }}
+{% endblock %}
+
+{% block content-inside %}
+
+            <div class="base-content-categ type">
+            <a href="" class="text-hov">Категорії</a>
+            <hr style="margin-top: 20px;">
+
+            </div>
+            <div style="display: table; margin: 25px 0 0 5%;" class="type">
+                {% for categ in categories %}
+                    <div class="categories-content">
+                        <a href="categories/{{ categ.cat_url_name }}" style="font-size: 90%;" class="text-hov">{{ categ.cat_name }}</a>
+                        {% for sub_categ in categ.cat.all %}
+                        <p><a href="categories/{{ categ.cat_url_name }}/{{ sub_categ.sub_cat_url_name }}" class="categ-text">{{ sub_categ.sub_cat_name }} ({{ sub_categ.post.all.count }})</a></p>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+
+{% endblock content-inside %}

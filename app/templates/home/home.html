@@ -1,0 +1,101 @@
+{% extends 'base-content.html' %}
+
+{% block title %}
+Your Library Proposes
+{% endblock %}
+
+
+{% block content-inside %}
+
+            <div class="base-content-categ type">
+            <a href="{% url 'hot' %}" class="text-hov">Гарячі</a>
+            <hr style="margin-top: 20px;">
+            </div>
+
+            <div class="base-content-book-container ">
+                {% for post in hot_post %}
+                  <div class="base-content-book">
+                      <a href="{% url 'popular_id' post_id=post.id %}"><img src="{{ post.post_image.url }}"></a>
+                      <h4 class="h-w"><a href="{% url 'popular_id' post_id=post.id %}" class="text-hov">{{ post.post_name }}</a></h4>
+                      {% if request.user.is_authenticated %}
+                      {% if user in post.selected.all %}
+                          <button data-post-id="{{ post.id }}" style="background-image: url('../static/img/logo-sel/logo_book_active.png'); background-size: cover;" class="logo-sel"></button>
+                      {% else %}
+                          <button data-post-id="{{ post.id }}" style="background-image: url('../static/img/logo-sel/logo_book.png'); background-size: cover;" class="logo-sel"></button>
+                      {% endif %}
+                      {% endif %}
+                  </div>
+                {% endfor %}
+
+            </div>
+
+            <div style="margin-top:20px;" class="base-content-categ type">
+            <a href="" class="text-hov">Хіт дня</a>
+            <hr style="margin-top: 20px;"></div>
+            <div class="base-content-book-container ">
+
+            {% for popular_day in populars_day %}
+                <div class="base-content-book">
+                    <a href="{% url 'popular_id' post_id=popular_day.post.id %}"><img src="{{ popular_day.post.post_image.url }}"></a>
+                    <h4 class="h-w"><a href="{% url 'popular_id' post_id=popular_day.post.id %}" class="text-hov">{{ popular_day.post.post_name }}</a></h4>
+                    {% if request.user.is_authenticated %}
+                    {% if user in popular_day.post.selected.all %}
+                        <button data-post-id="{{ popular_day.post.id }}" style="background-image: url('../static/img/logo-sel/logo_book_active.png'); background-size: cover;" class="logo-sel"></button>
+                        {% else %}
+                        <button data-post-id="{{ popular_day.post.id }}" style="background-image: url('../static/img/logo-sel/logo_book.png'); background-size: cover;" class="logo-sel"></button>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+            </div>
+
+            <div style="margin-top:20px;" class="base-content-categ type">
+            <a href="{% url 'popular' %}" class="text-hov">Популярні за весь час</a>
+            <hr style="margin-top: 20px;">
+            </div>
+<div class="base-content-book-container ">
+
+            {% for popular in populars %}
+                <div class="base-content-book">
+                    <a href="{% url 'popular_id' post_id=popular.post.id %}"><img src="{{ popular.post.post_image.url }}"></a>
+                    <h4 class="h-w"><a href="{% url 'popular_id' post_id=popular.post.id %}" class="text-hov">{{ popular.post.post_name }}</a></h4>
+                    {% if request.user.is_authenticated %}
+                    {% if user in popular.post.selected.all %}
+                        <button data-post-id="{{ popular.post.id }}" style="background-image: url('../static/img/logo-sel/logo_book_active.png'); background-size: cover;" class="logo-sel"></button>
+                        {% else %}
+                        <button data-post-id="{{ popular.post.id }}" style="background-image: url('../static/img/logo-sel/logo_book.png'); background-size: cover;" class="logo-sel"></button>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+            </div>
+
+<script>
+    $('.logo-sel').click(function(){
+        var button = $(this);  // Зберегти посилання на кнопку
+
+        var postId = button.data('post-id');
+        $.ajax({
+            type: "POST",
+            url: "{% url 'selected' %}",
+            data: {'post_id': postId, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+            dataType: "json",
+            success: function(response) {
+                if(response.result == true) {
+                    button.css({
+                        'background-image': 'url("../static/img/logo-sel/logo_book_active.png")',
+                        'background-size': 'cover'
+                    });
+                } else if(response.result == false) {
+                    button.css({
+                        'background-image': 'url("../static/img/logo-sel/logo_book.png")',
+                        'background-size': 'cover'
+                    });
+                }
+            }
+        });
+    });
+</script>
+
+
+{% endblock content-inside %}

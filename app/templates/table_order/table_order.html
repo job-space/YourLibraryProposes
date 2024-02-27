@@ -1,0 +1,69 @@
+{% extends 'base-content.html' %}
+
+{% block title %}
+{{ title }}
+{% endblock %}
+
+{% block content-inside %}
+
+<div class="base-content-categ type">
+    <a class="text-hov">{{ title_header }}</a>
+    <hr style="margin-top: 20px;">
+</div>
+<div style="margin: 0" class="base-content-support">
+<div class="type">
+<h2>Вітаю!<br> Сьогодні ми хочемо попросити вашу допомогу у розвитку Your Library Proposes.</h2>
+            <p><strong>Your Library Proposes</strong> - це місце, де відбувається вільний розвиток. Ми розуміємо, що багато хто може проігнорувати це повідомлення. Але якщо вам подобається користуватися Your Library Proposes, будь ласка, подивіться можливість пожертвувати ту суму, яку ви готові виділити на підтримку та розвиток нашого улюбленого сайту.<br>Нижче ви знайдете варіанти, як ви можете нам допомогти.</p>
+            <p>Дякую із турботою,<br> команда Your Library Proposes</p>
+            <p>Є два варіанти: переказ з картки на крипто-гаманець та переказ на крипто-гаманець безпосередньо:</p>
+            <h3>Якщо ви можете переказати криптовалюту безпосередньо, виберіть будь-яку валюту, яка вам зручна, і перекажіть бажану суму:</h3>
+            <ol style="overflow-wrap: break-word;">
+                <li><strong>USDT (Tether TRC20)</strong> – <code>0xf488822376ab9d1426741a214AFe89d4DA013a19</code></li>
+                <li><strong>Bitcoin (BTC)</strong> – <code>bc1q2e9j30nxjkatumfg87egwd08v75f3j8hn422d9</code>
+                </li><li><strong>Ethereum (ETH)</strong> – <code>0xf488822376ab9d1426741a214AFe89d4DA013a19</code></li>
+            </ol>
+            <h3>Якщо вам зручніше здійснити переказ карткою, то <a style="color: #0d124e" href="{% url 'support' %}">інструкція, як це зробити (це абсолютно нескладно):</a></h3>
+</div>
+</div>
+
+
+<div class="base-content-book-container-comm">
+    <form action="{% url 'table_order' %}" method="POST" class="form-container">
+        {% csrf_token %}
+        <input class="mess_cont" required="" name="message" placeholder="Приєднатися до обговорення">
+        {% if request.user.is_authenticated %}
+        <button class="but-comm" type="submit">Submit</button>
+         {% else %}
+        <button class="but-comm" onclick="formSend()" type="button">Submit</button>
+        {% endif %}
+    </form>
+</div>
+
+
+<div class="comm-t-o type">
+{% for message_obj in messages %}
+    <p style="margin: 30px;">
+        <div class="user-comm-t-l"><a class="log-u ">{{ message_obj.user.username.0 }}</a></div>
+        <div class="user-comm-t-r">
+            {% if user.username == message_obj.user.username %}
+            <p style="font-size: 18px; margin: 0 0 5px 0;">You</p>
+            {% else %}
+            <p style="font-size: 18px; margin: 0 0 5px 0;">{{ message_obj.user.username }}</p>
+            {% endif %}
+            <p style="font-size: 10px; margin-top: 5px;">{{ message_obj.data.day }}.{{ message_obj.data.month }}.{{ message_obj.data.year }}</p>
+            <p style="font-size: px;">{{ message_obj.message }}</p>
+        </div>
+    </p>
+{% endfor %}
+</div>
+
+
+<script>
+    function formSend() {
+        alert("Будь ласка, зареєструйтеся")
+    }
+</script>
+
+
+
+{% endblock content-inside %}

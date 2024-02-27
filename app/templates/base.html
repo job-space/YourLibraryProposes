@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ua" dir="ltr">
+
+<head>
+    {% load static %}
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="icon"  href="{% static 'img/book/icon_logo.jpg' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <script type="text/javascript" src="{% static '/js/jquery-3.6.4.js' %}"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Безкоштовне завантаження книг">
+    <meta name="keywords" content="скачать, завантажить, читать, книга, книжка, бесплатно, безкоштовно, онлайн">
+
+    <meta name="Author" content="Dart Vidar">
+    <meta name="Copyright" content="Dart Vidar">
+
+
+</head>
+
+<body>
+
+<a href="{% url 'support' %}" class="head-one type">Підтримай нас</a>
+
+<div class="main-logo type">
+    <h2><a href="{% url 'home' %}">Your Library Proposes</a></h2>
+    <h5 style="font-size: 18px;">Читай Пропонуй Створюй</h5>
+    <h5>Безкоштовні електронні книги</h5>
+</div>
+
+<header class="header">
+
+<nav class="nav type">
+    <ul>
+       <li>
+           <a href="{% url 'home' %}">Головна</a>
+       </li>
+       <li>
+           <a href="{% url 'new' %}">Нові</a>
+       </li>
+        <li>
+           <a href="{% url 'hot' %}">Гарячі</a>
+       </li>
+        <li>
+           <a href="{% url 'popular' %}">Популярні</a>
+       </li>
+        <li>
+           <a href="{% url 'categories' %}">Категорії</a>
+       </li>
+        <li>
+           <a href="{% url 'table_order' %}">Стіл замовлень</a>
+       </li>
+        <li>
+           <a href="{% url 'my_books' %}">Мої книги</a>
+       </li>
+       <li>
+           <a href="{% url 'update_news' %}">Оновлення</a>
+       </li>
+        <li>
+           <a href="{% url 'contact' %}">Зворотній зв'язок</a>
+       </li>
+    </ul>
+</nav>
+     <div class="burger">
+           <span></span>
+     </div>
+</header>
+
+
+<div class="base-content">
+    {% block support %}
+    {% endblock support %}
+
+<div class="base-content-center">
+{% block content %}
+
+{% endblock content %}
+    </div>
+</div>
+
+<div class="text-hov base-down">
+<a  href="{% url 'legal' %}">Правовласникам</a>
+<p>Copyright © 2023. Your Library Proposes.</p>
+</div>
+
+
+
+
+
+<script>
+    document.querySelector('.burger').addEventListener('click', function() {
+        this.classList.toggle('active-nav');
+        document.querySelector('.nav').classList.toggle('open');
+    })
+</script>
+
+</body>

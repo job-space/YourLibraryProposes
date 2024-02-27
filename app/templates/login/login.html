@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Логін
+{% endblock %}
+
+{% block support %}
+<div class="table">
+    <div class="table-contact">
+        <h2>Логін</h2>
+        <form method="POST" id="loginForm">
+            {% csrf_token %}
+            {% for f in form %}
+                <p>
+                    <label class="form-label type" for="{{ f.id_for_label }}">  {{ f.label }}: </label>
+                    <div>{{ f }}</div>
+                </p>
+                <div class="form-error">
+                    {% if f.errors %}
+                        {% for error in f.errors %}
+                            {% if 'required' in error %} Будь ласка, заповніть це поле. {% endif %}
+                            {% if 'invalid' in error %} Будь ласка, введіть коректне значення. {% endif %}
+                            {% if 'unique' in error %} Це значення вже існує. {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <button class="but-reg" type="submit">Увійти</button>
+        </form>
+    </div>
+</div>
+
+
+
+{% endblock support %}
